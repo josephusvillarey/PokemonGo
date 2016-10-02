@@ -5,19 +5,18 @@ import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.josephus.pokemongocompanionapp.PokemonGo;
 import com.josephus.pokemongocompanionapp.R;
 import com.pokegoapi.auth.GoogleUserCredentialProvider;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
-import java.util.concurrent.ExecutionException;
 import okhttp3.OkHttpClient;
 
 public class LoginActivity extends AppCompatActivity {
@@ -26,7 +25,6 @@ public class LoginActivity extends AppCompatActivity {
 
   private static final int LOGIN_ACTIVITY_REQUEST_CODE = 2234;
   private OkHttpClient httpClient;
-  private String refreshToken;
 
   @BindView(R.id.activity_login) LinearLayout parent;
 
@@ -37,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
 
     if (PokemonGo.containsString(PokemonGo.KEY_REFRESH_TOKEN)) {
       Snackbar.make(parent, "Already logged in.", Snackbar.LENGTH_SHORT).show();
-      launchMainActivity();
+      new ReloginTask().execute(PokemonGo.getString(PokemonGo.KEY_REFRESH_TOKEN));
     } else {
       Snackbar.make(parent, "Not yet logged in.", Snackbar.LENGTH_SHORT).show();
     }
@@ -57,7 +55,8 @@ public class LoginActivity extends AppCompatActivity {
   }
 
   private void launchMainActivity() {
-
+    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+    finish();
   }
 
   @OnClick(R.id.googleLogin) public void googleLogin(View view) {
@@ -72,29 +71,65 @@ public class LoginActivity extends AppCompatActivity {
       switch (resultCode) {
         case RESULT_OK:
           String key = data.getStringExtra("key");
-          try {
-            refreshToken = new LoginTask().execute(key).get();
-            if (refreshToken != null) {
-              Snackbar.make(parent, "Login successful!", Snackbar.LENGTH_SHORT).show();
-              PokemonGo.putString(PokemonGo.KEY_REFRESH_TOKEN, refreshToken);
-            }
-          } catch (InterruptedException e) {
-            e.printStackTrace();
-          } catch (ExecutionException e) {
-            e.printStackTrace();
-          }
+          new NewLoginTask().execute(key);
           break;
       }
     }
   }
 
-  class LoginTask extends AsyncTask<String, Void, String> {
+  class ReloginTask extends AsyncTask<String, Void, String> {
+
+    MaterialDialog progressDialog;
+
+    @Override protected void onPreExecute() {
+      super.onPreExecute();
+      Log.d(TAG, "relogin preex");
+      progressDialog = new MaterialDialog.Builder(LoginActivity.this).progress(true, 0)
+          .title("Logging in")
+          .content("Please wait")
+          .build();
+      progressDialog.show();
+    }
+
+    @Override protected String doInBackground(String... strings) {
+      try {
+        httpClient = new OkHttpClient();
+        PokemonGo.go = new com.pokegoapi.api.PokemonGo(httpClient);
+        PokemonGo.go.login(new GoogleUserCredentialProvider(httpClient, strings[0]));
+        return strings[0];
+      } catch (RemoteServerException e) {
+        e.printStackTrace();
+      } catch (LoginFailedException e) {
+        e.printStackTrace();
+      }
+      return null;
+    }
+
+    @Override protected void onPostExecute(String s) {
+      super.onPostExecute(s);
+      Log.d(TAG, "launching main now");
+      persistTokenAndLaunchMain(s);
+    }
+  }
+
+  class NewLoginTask extends AsyncTask<String, Void, String> {
+
+    MaterialDialog progressDialog;
+
+    @Override protected void onPreExecute() {
+      super.onPreExecute();
+      progressDialog = new MaterialDialog.Builder(LoginActivity.this).progress(true, 0)
+          .title("Logging in")
+          .content("Please wait")
+          .build();
+      progressDialog.show();
+    }
+
     @Override protected String doInBackground(String... strings) {
       try {
         PokemonGo.provider.login(strings[0]);
         PokemonGo.go = new com.pokegoapi.api.PokemonGo(httpClient);
         PokemonGo.go.login(PokemonGo.provider);
-
         return PokemonGo.provider.getRefreshToken();
       } catch (LoginFailedException e) {
         e.printStackTrace();
@@ -102,6 +137,23 @@ public class LoginActivity extends AppCompatActivity {
         e.printStackTrace();
       }
       return null;
+    }
+
+    @Override protected void onPostExecute(String s) {
+      super.onPostExecute(s);
+      progressDialog.dismiss();
+
+      persistTokenAndLaunchMain(s);
+    }
+  }
+
+  private void persistTokenAndLaunchMain(String s) {
+    if (s != null) {
+      Snackbar.make(parent, "Login successful!", Snackbar.LENGTH_SHORT).show();
+      PokemonGo.putString(PokemonGo.KEY_REFRESH_TOKEN, s);
+      launchMainActivity();
+    } else {
+      Log.d(TAG, "persist else");
     }
   }
 }

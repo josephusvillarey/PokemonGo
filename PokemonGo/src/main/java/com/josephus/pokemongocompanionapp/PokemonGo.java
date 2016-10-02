@@ -37,6 +37,10 @@ public class PokemonGo extends MultiDexApplication {
     sharedPreferences.edit().putString(key, string).commit();
   }
 
+  public static void clear() {
+    sharedPreferences.edit().clear().commit();
+  }
+
   @Override public void onCreate() {
     super.onCreate();
     sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);

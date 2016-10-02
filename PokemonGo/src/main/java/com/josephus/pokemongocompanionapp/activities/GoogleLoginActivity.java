@@ -1,6 +1,7 @@
 package com.josephus.pokemongocompanionapp.activities;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,16 +11,20 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.josephus.pokemongocompanionapp.R;
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 public class GoogleLoginActivity extends AppCompatActivity {
 
   private static final String TAG = GoogleLoginActivity.class.getSimpleName();
 
   @BindView(R.id.webview) WebView webView;
+  @BindView(R.id.activity_google_login) LinearLayout parent;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -48,11 +53,14 @@ public class GoogleLoginActivity extends AppCompatActivity {
       }
     });
     webView.setWebViewClient(new WebViewClient() {
+
       @Override public void onPageFinished(WebView view, String url) {
         if (url.startsWith("https://accounts.google.com/o/oauth2/approval")) {
           // get key on this page
           view.loadUrl(
               "javascript:console.log('MAGIC'+document.getElementsByTagName('html')[0].innerHTML);");
+          Snackbar.make(parent, "Please wait while you're redirected back to the login screen",
+              Snackbar.LENGTH_SHORT).show();
         }
         super.onPageFinished(view, url);
       }
