@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.josephus.pokemongocompanionapp"
+    package="com.josephus.pokemongo"
     >
 
   <uses-permission android:name="android.permission.INTERNET"/>
@@ -30,6 +30,11 @@
     </activity>
     <activity android:name=".activities.MainActivity">
     </activity>
-  </application>
+    <activity android:name=".activities.ContainerActivity">
+    </activity>
+      <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="b179a59477385b6da9a2b840e84b94e10bc16666" />
+    </application>
 
 </manifest>
