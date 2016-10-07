@@ -12,6 +12,7 @@
       app:cardElevation="3dip"
       app:contentPaddingLeft="4dip"
       app:contentPaddingRight="4dip"
+      app:cardUseCompatPadding="true"
       >
     <LinearLayout
         android:layout_width="fill_parent"
@@ -22,8 +23,17 @@
       <RelativeLayout
           android:layout_width="0dip"
           android:layout_height="wrap_content"
-          android:layout_weight="4"
+          android:layout_weight="6"
           >
+        <ImageView
+            android:layout_width="16dip"
+            android:layout_height="16dip"
+            android:adjustViewBounds="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/ic_fav_pressed"
+            android:id="@+id/fav_icon"
+            />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,8 +45,9 @@
             style="?android:textAppearanceSmall"
             />
         <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_width="56dip"
+            android:layout_height="56dip"
             android:layout_alignParentTop="true"
             android:layout_above="@id/cp_name_tv"
             android:id="@+id/image"
@@ -48,7 +59,7 @@
       <LinearLayout
           android:layout_width="0dip"
           android:layout_height="fill_parent"
-          android:layout_weight="16"
+          android:layout_weight="14"
           android:orientation="horizontal"
           android:weightSum="5"
           android:gravity="center_vertical"

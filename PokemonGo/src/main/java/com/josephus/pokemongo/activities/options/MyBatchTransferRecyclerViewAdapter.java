@@ -53,7 +53,7 @@ public class MyBatchTransferRecyclerViewAdapter
   public class ViewHolder extends RecyclerView.ViewHolder {
     Pokemon pokemon;
     LinearLayout parentPanel;
-    ImageView image;
+    ImageView image, fav;
     TextView cp_name, iv, atk, def, sta;
     CheckBox checkBox;
 
@@ -61,6 +61,7 @@ public class MyBatchTransferRecyclerViewAdapter
       super(itemView);
       parentPanel = (LinearLayout) itemView;
       image = (ImageView) itemView.findViewById(R.id.image);
+      fav = (ImageView) itemView.findViewById(R.id.fav_icon);
       cp_name = (TextView) itemView.findViewById(R.id.cp_name_tv);
       iv = (TextView) itemView.findViewById(R.id.iv);
       atk = (TextView) itemView.findViewById(R.id.atk);
@@ -77,11 +78,12 @@ public class MyBatchTransferRecyclerViewAdapter
       int resId = context.getResources()
           .getIdentifier("image_" + number, "drawable", context.getPackageName());
       image.setImageResource(resId);
-
+      fav.setImageResource(pokemon.isFavorite() ? R.drawable.ic_fav_pressed : R.drawable.ic_fav);
       cp_name.setText(
           context.getString(R.string.cp_name_text, String.valueOf(pokemon.getProto().getCp()),
               pokemon.getPokemonId().toString()));
-      iv.setText(context.getString(R.string.iv_text, String.format("%.2f", pokemon.getIvInPercentage())));
+      iv.setText(
+          context.getString(R.string.iv_text, String.format("%.2f", pokemon.getIvInPercentage())));
       atk.setText(context.getString(R.string.atk_text, pokemon.getProto().getIndividualAttack()));
       def.setText(context.getString(R.string.def_text, pokemon.getProto().getIndividualDefense()));
       sta.setText(context.getString(R.string.sta_text, pokemon.getProto().getIndividualStamina()));

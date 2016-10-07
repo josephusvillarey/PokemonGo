@@ -117,6 +117,7 @@
         android:layout_weight="1"
         android:text="Height\n1.50m"
         android:gravity="center"
+        android:id="@+id/height_tv"
         />
     <TextView
         android:layout_width="0dip"
@@ -124,6 +125,7 @@
         android:layout_weight="1"
         android:text="Weight\n1.50kg"
         android:gravity="center"
+        android:id="@+id/weight_tv"
         />
     <TextView
         android:layout_width="0dip"
@@ -131,6 +133,7 @@
         android:layout_weight="1"
         android:text="Candy\n999"
         android:gravity="center"
+        android:id="@+id/candy_tv"
         />
     <TextView
         android:layout_width="0dip"
@@ -138,6 +141,7 @@
         android:layout_weight="1"
         android:text="Max CP\n9999"
         android:gravity="center"
+        android:id="@+id/maxcp_tv"
         />
   </LinearLayout>
   <TextView

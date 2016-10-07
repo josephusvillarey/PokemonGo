@@ -2,6 +2,7 @@ package com.josephus.pokemongo.activities.options;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,15 +11,27 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnItemClick;
 import com.josephus.pokemongo.PokemonGo;
 import com.josephus.pokemongo.R;
 import com.josephus.pokemongo.activities.options.dummy.DummyContent.DummyItem;
+import com.josephus.pokemongo.comparators.CPComparator;
+import com.josephus.pokemongo.comparators.FavoriteComparator;
+import com.josephus.pokemongo.comparators.HPComparator;
+import com.josephus.pokemongo.comparators.IVComparator;
+import com.josephus.pokemongo.comparators.NameComparator;
+import com.josephus.pokemongo.comparators.NumComparator;
+import com.josephus.pokemongo.comparators.RecentComparator;
 import com.pokegoapi.api.pokemon.Pokemon;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 
 /**
@@ -32,6 +45,7 @@ public class BatchTransferFragment extends Fragment {
   private static final String TAG = BatchTransferFragment.class.getSimpleName();
 
   @BindView(R.id.list) RecyclerView recyclerView;
+  @BindView(R.id.sort) Spinner sortSpinner;
 
   private HashSet<Integer> checkedItemsIndex = null;
 
@@ -40,6 +54,7 @@ public class BatchTransferFragment extends Fragment {
   // TODO: Customize parameters
   private int mColumnCount = 1;
   private OnListFragmentInteractionListener mListener;
+  private MyBatchTransferRecyclerViewAdapter batchTransferRecyclerViewAdapter;
 
   /**
    * Mandatory empty constructor for the fragment manager to instantiate the
@@ -80,11 +95,53 @@ public class BatchTransferFragment extends Fragment {
       } else {
         recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
       }
-      recyclerView.setAdapter(
+      batchTransferRecyclerViewAdapter =
           new MyBatchTransferRecyclerViewAdapter(PokemonGo.pokemonList, mListener,
-              checkedItemsIndex));
+              checkedItemsIndex);
+      recyclerView.setAdapter(batchTransferRecyclerViewAdapter);
+
+      ArrayAdapter<CharSequence> spinnerAdapter =
+          ArrayAdapter.createFromResource(getActivity(), R.array.sort_by_options,
+              android.R.layout.simple_spinner_dropdown_item);
+      sortSpinner.setAdapter(spinnerAdapter);
     }
     return view;
+  }
+
+  @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+      @Override public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        switch (i) {
+          case 0: // Recent
+            Collections.sort(PokemonGo.pokemonList, new RecentComparator());
+            break;
+          case 1: // Fav
+            Collections.sort(PokemonGo.pokemonList, new FavoriteComparator());
+            break;
+          case 2: // Num
+            Collections.sort(PokemonGo.pokemonList, new NumComparator());
+            break;
+          case 3: //HP
+            Collections.sort(PokemonGo.pokemonList, new HPComparator());
+            break;
+          case 4: // Name
+            Collections.sort(PokemonGo.pokemonList, new NameComparator());
+            break;
+          case 5: // CP
+            Collections.sort(PokemonGo.pokemonList, new CPComparator());
+            break;
+          case 6: // IV
+            Collections.sort(PokemonGo.pokemonList, new IVComparator());
+            break;
+        }
+        batchTransferRecyclerViewAdapter.notifyDataSetChanged();
+      }
+
+      @Override public void onNothingSelected(AdapterView<?> adapterView) {
+
+      }
+    });
   }
 
   @Override public void onAttach(Context context) {

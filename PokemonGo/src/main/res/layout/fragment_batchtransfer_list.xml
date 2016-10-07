@@ -9,12 +9,28 @@
     android:orientation="vertical"
     >
 
-  <Button
+  <LinearLayout
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
-      android:id="@+id/transfer"
-      android:text="Transfer"
-      />
+      android:orientation="horizontal"
+      android:weightSum="2"
+      >
+    <Spinner
+        android:gravity="center"
+        android:layout_weight="1"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:id="@+id/sort"
+        android:text="Sort"
+        />
+    <Button
+        android:layout_weight="1"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:id="@+id/transfer"
+        android:text="Transfer"
+        />
+  </LinearLayout>
 
   <android.support.v7.widget.RecyclerView
       android:id="@+id/list"

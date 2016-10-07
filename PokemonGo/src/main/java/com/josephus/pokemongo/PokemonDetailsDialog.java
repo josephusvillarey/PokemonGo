@@ -16,6 +16,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.api.pokemon.PokemonType;
+import com.pokegoapi.exceptions.NoSuchItemException;
+import org.w3c.dom.Text;
 
 /**
  * Created by josephus on 04/10/2016.
@@ -34,6 +36,10 @@ public class PokemonDetailsDialog extends Dialog {
   @BindView(R.id.atk_tv) TextView atk;
   @BindView(R.id.def_tv) TextView def;
   @BindView(R.id.sta_tv) TextView sta;
+  @BindView(R.id.height_tv) TextView height;
+  @BindView(R.id.weight_tv) TextView weight;
+  @BindView(R.id.candy_tv) TextView candy;
+  @BindView(R.id.maxcp_tv) TextView maxCp;
 
   private Pokemon pokemon;
 
@@ -67,11 +73,11 @@ public class PokemonDetailsDialog extends Dialog {
 
     isFav.setImageResource(pokemon.isFavorite() ? R.drawable.ic_fav_pressed : R.drawable.ic_fav);
     name.setText(pokemon.getPokemonId().toString());
-    cp.setText(String.valueOf(pokemon.getProto().getCp()));
-    String typeString =
+    cp.setText(
+        getContext().getString(R.string.cp_text, String.valueOf(pokemon.getProto().getCp())));
+    type.setText(
         pokemon.getMeta().getType1().toString() + (pokemon.getMeta().getType2() == PokemonType.NONE
-            ? "" : "/" + pokemon.getMeta().getType2().toString());
-    type.setText(typeString);
+            ? "" : "/" + pokemon.getMeta().getType2().toString()));
     iv.setText(getContext().getString(R.string.iv_text,
         String.format("%.2f", pokemon.getIvInPercentage())));
     atk.setText(
@@ -80,5 +86,16 @@ public class PokemonDetailsDialog extends Dialog {
         getContext().getString(R.string.def_text, pokemon.getProto().getIndividualDefense()));
     sta.setText(
         getContext().getString(R.string.sta_text, pokemon.getProto().getIndividualStamina()));
+    height.setText(getContext().getString(R.string.height_text,
+        String.format("%.2f", pokemon.getProto().getHeightM())));
+    weight.setText(getContext().getString(R.string.weight_text,
+        String.format("%.2f", pokemon.getProto().getWeightKg())));
+    candy.setText(getContext().getString(R.string.candy_text, pokemon.getCandy()));
+    try {
+      maxCp.setText(getContext().getString(R.string.max_cp_text, pokemon.getMaxCpForPlayer()));
+    } catch (NoSuchItemException e) {
+      maxCp.setText("Not available");
+      e.printStackTrace();
+    }
   }
 }
