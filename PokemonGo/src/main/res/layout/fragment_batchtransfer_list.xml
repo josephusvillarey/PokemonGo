@@ -40,7 +40,7 @@
       android:layout_marginLeft="16dp"
       android:layout_marginRight="16dp"
       app:layoutManager="LinearLayoutManager"
-      tools:context="com.josephus.pokemongo.activities.options.BatchTransferFragment"
+      tools:context="com.josephus.pokemongo.fragments.BatchTransferFragment"
       tools:listitem="@layout/fragment_batchtransfer"
       />
 </LinearLayout>

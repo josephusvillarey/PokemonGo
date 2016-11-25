@@ -1,8 +1,7 @@
-package com.josephus.pokemongo.activities.options;
+package com.josephus.pokemongo.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.josephus.pokemongo.R;
+import com.josephus.pokemongo.fragments.BatchTransferFragment;
 import com.pokegoapi.api.pokemon.Pokemon;
 import java.util.HashSet;
 import java.util.List;

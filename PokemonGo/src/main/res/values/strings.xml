@@ -1,23 +1,29 @@
 <resources>
-  <string name="app_name">PokemonGo</string>
-  <string name="cp_name_text">CP %1$s\n%2$s</string>
-  <string name="cp_text">CP %1$s</string>
-  <string name="iv_text">IV\n%1$s%%</string>
-  <string name="atk_text">ATK\n%1$d</string>
-  <string name="def_text">DEF\n%1$d</string>
-  <string name="sta_text">STA\n%1$d</string>
-  <string name="height_text">Height\n%1$sm</string>
-  <string name="weight_text">Weight\n%1$skg</string>
-  <string name="candy_text">Candy\n%1$d</string>
-  <string name="max_cp_text">Max CP\n%1$d</string>
+    <string name="app_name">PokemonGo</string>
+    <string name="cp_name_text">CP %1$s\n%2$s</string>
+    <string name="cp_text">CP %1$s</string>
+    <string name="iv_text">IV\n%1$s%%</string>
+    <string name="atk_text">ATK\n%1$d</string>
+    <string name="def_text">DEF\n%1$d</string>
+    <string name="sta_text">STA\n%1$d</string>
+    <string name="height_text">Height\n%1$sm</string>
+    <string name="weight_text">Weight\n%1$skg</string>
+    <string name="candy_text">Candy\n%1$d</string>
+    <string name="max_cp_text">Max CP\n%1$d</string>
 
-  <string-array name="sort_by_options">
-    <item>Recent</item>
-    <item>Favorite</item>
-    <item>Number</item>
-    <item>HP</item>
-    <item>Name</item>
-    <item>Combat Power</item>
-    <item>IV</item>
-  </string-array>
+    <!-- Transfer Dialog -->
+    <string name="transfer_dialog_title">Transferring Pokemon</string>
+    <string name="transfer_dialog_content">Transferring %1$d items</string>
+    <string name="transfer_dialog_success_title">Transfer success</string>
+    <string name="transfer_dialog_success_content">Transferred %1$d pokemon successfully. %2$d failed to transfer</string>
+    <string name="transfer_dialog_success_ok">OK</string>
+
+    <string-array name="sort_by_options">
+        <item>Favorite</item>
+        <item>Number</item>
+        <item>HP</item>
+        <item>Name</item>
+        <item>Combat Power</item>
+        <item>IV</item>
+    </string-array>
 </resources>
