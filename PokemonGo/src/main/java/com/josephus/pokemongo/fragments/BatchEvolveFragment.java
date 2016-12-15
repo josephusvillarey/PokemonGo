@@ -51,7 +51,7 @@ import butterknife.OnClick;
  */
 public class BatchEvolveFragment extends Fragment {
 
-    private static final String TAG = BatchTransferFragment.class.getSimpleName();
+    private static final String TAG = BatchEvolveFragment.class.getSimpleName();
 
     @BindView(R.id.list)
     RecyclerView recyclerView;
@@ -65,7 +65,7 @@ public class BatchEvolveFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    private MyBatchEvolveRecyclerViewAdapter batchTransferRecyclerViewAdapter;
+    private MyBatchEvolveRecyclerViewAdapter batchEvolveRecyclerViewAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -109,10 +109,8 @@ public class BatchEvolveFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            batchTransferRecyclerViewAdapter =
-                    new MyBatchEvolveRecyclerViewAdapter(PokemonGo.pokemonList, mListener,
-                            checkedItemsIndex);
-            recyclerView.setAdapter(batchTransferRecyclerViewAdapter);
+            batchEvolveRecyclerViewAdapter = new MyBatchEvolveRecyclerViewAdapter(PokemonGo.pokemonList, mListener, checkedItemsIndex);
+            recyclerView.setAdapter(batchEvolveRecyclerViewAdapter);
 
             ArrayAdapter<CharSequence> spinnerAdapter =
                     ArrayAdapter.createFromResource(getActivity(), R.array.sort_by_options,
@@ -128,6 +126,7 @@ public class BatchEvolveFragment extends Fragment {
         sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d(TAG, "switched");
                 switch (i) {
                     case 0: // Fav
                         Collections.sort(PokemonGo.pokemonList, new FavoriteComparator());
@@ -148,7 +147,7 @@ public class BatchEvolveFragment extends Fragment {
                         Collections.sort(PokemonGo.pokemonList, new IVComparator());
                         break;
                 }
-                batchTransferRecyclerViewAdapter.notifyDataSetChanged();
+                batchEvolveRecyclerViewAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -185,8 +184,67 @@ public class BatchEvolveFragment extends Fragment {
             pokemonToEvolve.add(PokemonGo.pokemonList.get(i));
         }
 
-        new TransferTask().execute(pokemonToEvolve);
+        new EvolveTask().execute(pokemonToEvolve);
 
+    }
+
+    class EvolveTask extends AsyncTask<List<Pokemon>, Boolean, Void> {
+        private MaterialDialog evolveProgressDialog;
+        private int success = 0, fail = 0, cantEvolve = 0;
+
+        @Override
+        protected Void doInBackground(List<Pokemon>... lists) {
+            for (Pokemon p : lists[0]) {
+                boolean successful = true;
+                Log.d(TAG, "calling evolve");
+                if (p.canEvolve()) {
+                    try {
+                        p.evolve();
+                    } catch (LoginFailedException e) {
+                        e.printStackTrace();
+                        successful = false;
+                    } catch (RemoteServerException e) {
+                        e.printStackTrace();
+                        successful = false;
+                    }
+                } else {
+                    cantEvolve++;
+                }
+                publishProgress(successful);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            evolveProgressDialog = new MaterialDialog.Builder(getActivity()).title(R.string.evolve_dialog_title).content(R.string.evolve_dialog_content, checkedItemsIndex.size()).progress(false, checkedItemsIndex.size(), true).show();
+        }
+
+        @Override
+        protected void onProgressUpdate(Boolean... values) {
+            super.onProgressUpdate(values);
+            if (values[0]) {
+                success++;
+            } else {
+                fail++;
+            }
+            evolveProgressDialog.incrementProgress(1);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            evolveProgressDialog.dismiss();
+            new MaterialDialog.Builder(getActivity()).title(R.string.evolve_dialog_success_title).content(getString(R.string.evolve_dialog_success_content, success, fail, cantEvolve)).positiveText(R.string.evolve_dialog_success_ok).onPositive(new MaterialDialog.SingleButtonCallback() {
+                @Override
+                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                    dialog.dismiss();
+                    ;
+                    getActivity().finish();
+                }
+            }).show();
+        }
     }
 
     class TransferTask extends AsyncTask<List<Pokemon>, Boolean, Void> {

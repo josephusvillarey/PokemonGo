@@ -36,12 +36,7 @@ public class MyBatchEvolveRecyclerViewAdapter
     public MyBatchEvolveRecyclerViewAdapter(List<Pokemon> items,
                                             BatchEvolveFragment.OnListFragmentInteractionListener listener,
                                             HashSet<Integer> checkedItemsIndex) {
-        mValues = new ArrayList<>();
-        for (Pokemon pokemon : items) {
-            if (pokemon.canEvolve()) {
-                mValues.add(pokemon);
-            }
-        }
+        mValues = items;
         this.mListener = listener;
         this.checkedItemsIndex = checkedItemsIndex;
     }
