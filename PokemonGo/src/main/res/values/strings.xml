@@ -10,6 +10,10 @@
     <string name="weight_text">Weight\n%1$skg</string>
     <string name="candy_text">Candy\n%1$d</string>
     <string name="max_cp_text">Max CP\n%1$d</string>
+    <string name="total_candies_text">Total candies: %1$d</string>
+    <string name="to_evolve">To evolve: %1$d</string>
+    <string name="in_list">In list: %1$d</string>
+    <string name="selected">Selected: %1$d</string>
 
     <!-- Transfer Dialog -->
     <string name="transfer_dialog_title">Transferring Pokemon</string>

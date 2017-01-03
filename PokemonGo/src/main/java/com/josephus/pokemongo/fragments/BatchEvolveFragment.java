@@ -17,19 +17,21 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.josephus.pokemongo.PokemonGo;
 import com.josephus.pokemongo.R;
 import com.josephus.pokemongo.adapters.MyBatchEvolveRecyclerViewAdapter;
-import com.josephus.pokemongo.adapters.MyBatchTransferRecyclerViewAdapter;
 import com.josephus.pokemongo.comparators.CPComparator;
 import com.josephus.pokemongo.comparators.FavoriteComparator;
 import com.josephus.pokemongo.comparators.HPComparator;
 import com.josephus.pokemongo.comparators.IVComparator;
 import com.josephus.pokemongo.comparators.NameComparator;
 import com.josephus.pokemongo.comparators.NumComparator;
+import com.josephus.pokemongo.interfaces.ItemSelectable;
+import com.josephus.pokemongo.interfaces.OnListFragmentInteractionListener;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
@@ -49,7 +51,7 @@ import butterknife.OnClick;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class BatchEvolveFragment extends Fragment {
+public class BatchEvolveFragment extends Fragment implements ItemSelectable {
 
     private static final String TAG = BatchEvolveFragment.class.getSimpleName();
 
@@ -57,6 +59,10 @@ public class BatchEvolveFragment extends Fragment {
     RecyclerView recyclerView;
     @BindView(R.id.sort)
     Spinner sortSpinner;
+    @BindView(R.id.selected_tv)
+    TextView selectedTv;
+    @BindView(R.id.in_list_tv)
+    TextView inListTv;
 
     private HashSet<Integer> checkedItemsIndex = null;
 
@@ -155,6 +161,9 @@ public class BatchEvolveFragment extends Fragment {
 
             }
         });
+
+        inListTv.setText(getString(R.string.in_list, batchEvolveRecyclerViewAdapter.getItemCount()));
+        selectedTv.setText(getString(R.string.selected, checkedItemsIndex.size()));
     }
 
     @Override
@@ -186,6 +195,15 @@ public class BatchEvolveFragment extends Fragment {
 
         new EvolveTask().execute(pokemonToEvolve);
 
+    }
+
+    @Override
+    public void onItemSelected(int value) {
+        modifySelectedCount(value);
+    }
+
+    public void modifySelectedCount(int count) {
+        selectedTv.setText(getString(R.string.selected, count));
     }
 
     class EvolveTask extends AsyncTask<List<Pokemon>, Boolean, Void> {
@@ -301,20 +319,5 @@ public class BatchEvolveFragment extends Fragment {
                 }
             }).show();
         }
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(Pokemon pokemon);
     }
 }

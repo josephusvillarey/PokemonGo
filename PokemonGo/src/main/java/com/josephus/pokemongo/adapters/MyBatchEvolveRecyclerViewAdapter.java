@@ -12,17 +12,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.josephus.pokemongo.R;
-import com.josephus.pokemongo.fragments.BatchEvolveFragment;
-import com.josephus.pokemongo.fragments.BatchTransferFragment;
+import com.josephus.pokemongo.interfaces.OnListFragmentInteractionListener;
 import com.pokegoapi.api.pokemon.Pokemon;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Pokemon} and makes a call to the
- * specified {@link BatchTransferFragment.OnListFragmentInteractionListener}.
+ * specified {@link OnListFragmentInteractionListener}.
  */
 public class MyBatchEvolveRecyclerViewAdapter
         extends RecyclerView.Adapter<MyBatchEvolveRecyclerViewAdapter.ViewHolder> {
@@ -31,10 +29,10 @@ public class MyBatchEvolveRecyclerViewAdapter
 
     private final List<Pokemon> mValues;
     private final HashSet<Integer> checkedItemsIndex;
-    private final BatchEvolveFragment.OnListFragmentInteractionListener mListener;
+    private final OnListFragmentInteractionListener mListener;
 
     public MyBatchEvolveRecyclerViewAdapter(List<Pokemon> items,
-                                            BatchEvolveFragment.OnListFragmentInteractionListener listener,
+                                            OnListFragmentInteractionListener listener,
                                             HashSet<Integer> checkedItemsIndex) {
         mValues = items;
         this.mListener = listener;
@@ -61,7 +59,7 @@ public class MyBatchEvolveRecyclerViewAdapter
         Pokemon pokemon;
         LinearLayout parentPanel;
         ImageView image, fav;
-        TextView cp_name, iv, atk, def, sta;
+        TextView cp_name, iv, atk, def, sta, totalCandies, toEvolve;
         CheckBox checkBox;
 
         public ViewHolder(View itemView) {
@@ -75,6 +73,8 @@ public class MyBatchEvolveRecyclerViewAdapter
             def = (TextView) itemView.findViewById(R.id.def);
             sta = (TextView) itemView.findViewById(R.id.sta);
             checkBox = (CheckBox) itemView.findViewById(R.id.checkbox);
+            totalCandies = (TextView) itemView.findViewById(R.id.total_candies_tv);
+            toEvolve = (TextView) itemView.findViewById(R.id.candies_to_evolve);
         }
 
         public void bindTo(final Pokemon pokemon) {
@@ -94,6 +94,13 @@ public class MyBatchEvolveRecyclerViewAdapter
             atk.setText(context.getString(R.string.atk_text, pokemon.getProto().getIndividualAttack()));
             def.setText(context.getString(R.string.def_text, pokemon.getProto().getIndividualDefense()));
             sta.setText(context.getString(R.string.sta_text, pokemon.getProto().getIndividualStamina()));
+            totalCandies.setText(context.getString(R.string.total_candies_text, pokemon.getCandy()));
+            if (pokemon.getCandiesToEvolve() > 0) {
+                toEvolve.setVisibility(View.VISIBLE);
+                toEvolve.setText(context.getString(R.string.to_evolve, pokemon.getMeta().getCandyToEvolve()));
+            } else {
+                toEvolve.setVisibility(View.GONE);
+            }
 
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -103,6 +110,7 @@ public class MyBatchEvolveRecyclerViewAdapter
                     } else {
                         checkedItemsIndex.remove(getAdapterPosition());
                     }
+                    mListener.onSecondaryListFragmentInteraction(checkedItemsIndex.size());
                 }
             });
             checkBox.setChecked(checkedItemsIndex.contains(getAdapterPosition()));

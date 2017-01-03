@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -29,6 +30,8 @@ import com.josephus.pokemongo.comparators.HPComparator;
 import com.josephus.pokemongo.comparators.IVComparator;
 import com.josephus.pokemongo.comparators.NameComparator;
 import com.josephus.pokemongo.comparators.NumComparator;
+import com.josephus.pokemongo.interfaces.ItemSelectable;
+import com.josephus.pokemongo.interfaces.OnListFragmentInteractionListener;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
@@ -48,7 +51,7 @@ import butterknife.OnClick;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class BatchTransferFragment extends Fragment {
+public class BatchTransferFragment extends Fragment implements ItemSelectable {
 
     private static final String TAG = BatchTransferFragment.class.getSimpleName();
 
@@ -56,6 +59,10 @@ public class BatchTransferFragment extends Fragment {
     RecyclerView recyclerView;
     @BindView(R.id.sort)
     Spinner sortSpinner;
+    @BindView(R.id.in_list_tv)
+    TextView inList;
+    @BindView(R.id.selected_tv)
+    TextView selectedTv;
 
     private HashSet<Integer> checkedItemsIndex = null;
 
@@ -100,6 +107,13 @@ public class BatchTransferFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_batchtransfer_list, container, false);
         ButterKnife.bind(this, view);
 
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         // Set the adapter
         if (view instanceof LinearLayout) {
             Context context = view.getContext();
@@ -118,12 +132,7 @@ public class BatchTransferFragment extends Fragment {
                             android.R.layout.simple_spinner_dropdown_item);
             sortSpinner.setAdapter(spinnerAdapter);
         }
-        return view;
-    }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -155,6 +164,9 @@ public class BatchTransferFragment extends Fragment {
 
             }
         });
+
+        inList.setText(getString(R.string.in_list, batchTransferRecyclerViewAdapter.getItemCount()));
+        selectedTv.setText(getString(R.string.selected, checkedItemsIndex.size()));
     }
 
     @Override
@@ -186,6 +198,11 @@ public class BatchTransferFragment extends Fragment {
 
         new TransferTask().execute(pokemonToTransfer);
 
+    }
+
+    @Override
+    public void onItemSelected(int value) {
+        modifySelectedCount(value);
     }
 
     class TransferTask extends AsyncTask<List<Pokemon>, Boolean, Void> {
@@ -244,18 +261,8 @@ public class BatchTransferFragment extends Fragment {
         }
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(Pokemon pokemon);
+    public void modifySelectedCount(int count) {
+        selectedTv.setText(getString(R.string.selected, count));
     }
+
 }
