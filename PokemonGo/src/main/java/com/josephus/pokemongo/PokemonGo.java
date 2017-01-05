@@ -22,6 +22,23 @@ public class PokemonGo extends MultiDexApplication {
   public static GoogleUserCredentialProvider provider;
   public static List<Pokemon> pokemonList;
   private static SharedPreferences sharedPreferences;
+  private boolean isBatchEvolveServiceRunning, isBatchTransferServiceRunning;
+
+  public boolean isBatchEvolveServiceRunning() {
+    return isBatchEvolveServiceRunning;
+  }
+
+  public void setBatchEvolveServiceRunning(boolean batchEvolveServiceRunning) {
+    isBatchEvolveServiceRunning = batchEvolveServiceRunning;
+  }
+
+  public boolean isBatchTransferServiceRunning() {
+    return isBatchTransferServiceRunning;
+  }
+
+  public void setBatchTransferServiceRunning(boolean batchTransferServiceRunning) {
+    isBatchTransferServiceRunning = batchTransferServiceRunning;
+  }
 
   public static boolean containsString(String key) {
     return sharedPreferences.contains(key) && sharedPreferences.getString(key, null) != null;

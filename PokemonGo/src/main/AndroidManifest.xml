@@ -35,6 +35,8 @@
       <meta-data
             android:name="io.fabric.ApiKey"
             android:value="b179a59477385b6da9a2b840e84b94e10bc16666" />
-    </application>
+      <service android:name=".services.BatchTransferService" />
+    <service android:name=".services.BatchEvolveService" />
+  </application>
 
 </manifest>
