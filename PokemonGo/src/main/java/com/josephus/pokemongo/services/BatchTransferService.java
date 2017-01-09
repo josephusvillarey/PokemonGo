@@ -1,7 +1,6 @@
 package com.josephus.pokemongo.services;
 
 import android.app.IntentService;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -9,7 +8,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
@@ -32,14 +30,19 @@ public class BatchTransferService extends IntentService {
     private static final String TAG = BatchTransferService.class.getSimpleName();
 
     public static final String KEY_INDICES = "indices";
+    public static final String KEY_TRANSFER_STATUS = "com.josephus.pokemongo.services.TRANSFER_STATUS";
+    public static final String TRANSFER_RUNNING = "running";
+    public static final String TRANSFER_COMPLETE = "complete";
+    public static final String TRANSFER_COUNT = "transfer_count";
+    public static final String TRANSFER_TOTAL = "transfer_total";
     private static final int TRANSFER_NOTIFICATION_ID = 240857;
 
     private int[] indices;
     private NotificationManager mNotificationManager;
     private NotificationCompat.Builder mBuilder;
 
-    public BatchTransferService(String name) {
-        super(name);
+    public BatchTransferService() {
+        super(TAG);
     }
 
     @Override
@@ -65,7 +68,7 @@ public class BatchTransferService extends IntentService {
 
         setupNotification(progress);
 
-        for(Pokemon p: pokemonList) {
+        for (Pokemon p : pokemonList) {
             boolean successful = true;
             Log.d(TAG, "calling transfer");
             try {
@@ -77,15 +80,36 @@ public class BatchTransferService extends IntentService {
             }
             publishProgress(++progress);
         }
+
+        finished(progress);
     }
 
     private void publishProgress(int progress) {
         mBuilder.setProgress(indices.length, progress, false);
+        mNotificationManager.notify(TRANSFER_NOTIFICATION_ID, mBuilder.build());
+
+        Intent i = new Intent(KEY_TRANSFER_STATUS);
+        i.putExtra(KEY_TRANSFER_STATUS, TRANSFER_RUNNING);
+        i.putExtra(TRANSFER_COUNT, progress);
+        i.putExtra(TRANSFER_TOTAL, indices.length);
+        sendBroadcast(i);
+    }
+
+    private void finished(int progress) {
+        mBuilder.setProgress(indices.length, progress, false);
+        mBuilder.setOngoing(false);
+        mBuilder.setContentTitle(getString(R.string.transfer_dialog_complete_title));
+        mBuilder.setContentText(getString(R.string.transfer_dialog_complete_content, indices.length));
+        mNotificationManager.notify(TRANSFER_NOTIFICATION_ID, mBuilder.build());
+
+        ((PokemonGo)getApplication()).setBatchTransferServiceRunning(false);
+
+        Intent i = new Intent(KEY_TRANSFER_STATUS);
+        i.putExtra(KEY_TRANSFER_STATUS, TRANSFER_COMPLETE);
+        sendBroadcast(i);
     }
 
     private void setupNotification(int progress) {
-        NotificationCompat.Builder mBuilder;
-        NotificationManager mNotificationManager;
         mBuilder = new NotificationCompat.Builder(getApplicationContext()).setSmallIcon(R.mipmap.ic_launcher).setContentTitle(getString(R.string.transfer_dialog_title)).setContentText(getString(R.string.transfer_dialog_content, indices.length));
 
         Intent resultIntent = new Intent(getApplicationContext(), ContainerActivity.class);
@@ -96,7 +120,14 @@ public class BatchTransferService extends IntentService {
         mBuilder.setContentIntent(resultPendingIntent);
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mBuilder.setProgress(indices.length, progress, false);
+        mBuilder.setOngoing(true);
         mNotificationManager.notify(TRANSFER_NOTIFICATION_ID, mBuilder.build());
+
+        ((PokemonGo)getApplication()).setBatchTransferServiceRunning(true);
+
+        Intent i = new Intent(KEY_TRANSFER_STATUS);
+        i.putExtra(KEY_TRANSFER_STATUS, TRANSFER_RUNNING);
+        sendBroadcast(i);
     }
 
     class BatchTransferTask extends AsyncTask<List<Pokemon>, Boolean, Void> {

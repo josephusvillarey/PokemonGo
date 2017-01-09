@@ -1,15 +1,15 @@
 package com.josephus.pokemongo.fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.os.AsyncTask;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.josephus.pokemongo.PokemonGo;
 import com.josephus.pokemongo.R;
@@ -32,9 +31,8 @@ import com.josephus.pokemongo.comparators.NameComparator;
 import com.josephus.pokemongo.comparators.NumComparator;
 import com.josephus.pokemongo.interfaces.ItemSelectable;
 import com.josephus.pokemongo.interfaces.OnListFragmentInteractionListener;
+import com.josephus.pokemongo.services.BatchTransferService;
 import com.pokegoapi.api.pokemon.Pokemon;
-import com.pokegoapi.exceptions.LoginFailedException;
-import com.pokegoapi.exceptions.RemoteServerException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,6 +42,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
  * A fragment representing a list of Items.
@@ -64,7 +63,9 @@ public class BatchTransferFragment extends Fragment implements ItemSelectable {
     @BindView(R.id.selected_tv)
     TextView selectedTv;
 
+    private BroadcastReceiver transferStatusReceiver;
     private HashSet<Integer> checkedItemsIndex = null;
+    private MaterialDialog progressDialog;
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -190,14 +191,16 @@ public class BatchTransferFragment extends Fragment implements ItemSelectable {
     public void transfer(View view) {
 
         List<Pokemon> pokemonToTransfer = new ArrayList<>();
+        int[] indices = new int[checkedItemsIndex.size()];
 
+        int index = 0;
         for (Integer i : checkedItemsIndex) {
-            Log.d(TAG, "item: " + i);
-            pokemonToTransfer.add(PokemonGo.pokemonList.get(i));
+            indices[index++] = i;
         }
 
-        new TransferTask().execute(pokemonToTransfer);
-
+        Intent i = new Intent(getActivity(), BatchTransferService.class);
+        i.putExtra(BatchTransferService.KEY_INDICES, indices);
+        getActivity().startService(i);
     }
 
     @Override
@@ -205,61 +208,90 @@ public class BatchTransferFragment extends Fragment implements ItemSelectable {
         modifySelectedCount(value);
     }
 
-    class TransferTask extends AsyncTask<List<Pokemon>, Boolean, Void> {
-
-
-        private MaterialDialog transferProgressDialog;
-        private int success = 0, fail = 0;
-
-        @Override
-        protected Void doInBackground(List<Pokemon>... list) {
-            for (Pokemon p : list[0]) {
-                boolean successful = true;
-                Log.d(TAG, "calling transfer");
-                try {
-                    p.transferPokemon();
-                } catch (LoginFailedException e) {
-                    e.printStackTrace();
-                    successful = false;
-                } catch (RemoteServerException e) {
-                    e.printStackTrace();
-                    successful = false;
+    @Override
+    public void onResume() {
+        super.onResume();
+        transferStatusReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (intent.getStringExtra(BatchTransferService.KEY_TRANSFER_STATUS)) {
+                    case BatchTransferService.TRANSFER_RUNNING:
+                        if (progressDialog == null) {
+                            progressDialog = new MaterialDialog.Builder(getActivity()).build();
+                        }
+                        progressDialog.setProgress(intent.getIntExtra(BatchTransferService.TRANSFER_COUNT, 0));
+                        progressDialog.setMaxProgress(intent.getIntExtra(BatchTransferService.TRANSFER_TOTAL, 0));
+                        progressDialog.show();
+                        break;
+                    case BatchTransferService.TRANSFER_COMPLETE:
+                        break;
                 }
-                publishProgress(successful);
             }
-            return null;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            transferProgressDialog = new MaterialDialog.Builder(getActivity()).title(R.string.transfer_dialog_title).content(getString(R.string.transfer_dialog_content, checkedItemsIndex.size())).progress(false, checkedItemsIndex.size(), true).show();
-        }
-
-        @Override
-        protected void onProgressUpdate(Boolean... values) {
-            super.onProgressUpdate(values);
-            if (values[0]) {
-                success++;
-            } else {
-                fail++;
-            }
-            transferProgressDialog.incrementProgress(1);
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            transferProgressDialog.dismiss();
-            new MaterialDialog.Builder(getActivity()).title(R.string.transfer_dialog_success_title).content(getString(R.string.transfer_dialog_success_content, success, fail)).positiveText(R.string.transfer_dialog_success_ok).onPositive(new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                    dialog.dismiss();
-                    getActivity().finish();
-                }
-            }).show();
-        }
+        };
+        getActivity().registerReceiver(transferStatusReceiver, new IntentFilter(BatchTransferService.KEY_TRANSFER_STATUS));
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(transferStatusReceiver);
+    }
+
+    //    class TransferTask extends AsyncTask<List<Pokemon>, Boolean, Void> {
+//
+//
+//        private MaterialDialog transferProgressDialog;
+//        private int success = 0, fail = 0;
+//
+//        @Override
+//        protected Void doInBackground(List<Pokemon>... list) {
+//            for (Pokemon p : list[0]) {
+//                boolean successful = true;
+//                Log.d(TAG, "calling transfer");
+//                try {
+//                    p.transferPokemon();
+//                } catch (LoginFailedException e) {
+//                    e.printStackTrace();
+//                    successful = false;
+//                } catch (RemoteServerException e) {
+//                    e.printStackTrace();
+//                    successful = false;
+//                }
+//                publishProgress(successful);
+//            }
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            transferProgressDialog = new MaterialDialog.Builder(getActivity()).title(R.string.transfer_dialog_title).content(getString(R.string.transfer_dialog_content, checkedItemsIndex.size())).progress(false, checkedItemsIndex.size(), true).show();
+//        }
+//
+//        @Override
+//        protected void onProgressUpdate(Boolean... values) {
+//            super.onProgressUpdate(values);
+//            if (values[0]) {
+//                success++;
+//            } else {
+//                fail++;
+//            }
+//            transferProgressDialog.incrementProgress(1);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void aVoid) {
+//            super.onPostExecute(aVoid);
+//            transferProgressDialog.dismiss();
+//            new MaterialDialog.Builder(getActivity()).title(R.string.transfer_dialog_success_title).content(getString(R.string.transfer_dialog_success_content, success, fail)).positiveText(R.string.transfer_dialog_success_ok).onPositive(new MaterialDialog.SingleButtonCallback() {
+//                @Override
+//                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                    dialog.dismiss();
+//                    getActivity().finish();
+//                }
+//            }).show();
+//        }
+//    }
 
     public void modifySelectedCount(int count) {
         selectedTv.setText(getString(R.string.selected, count));

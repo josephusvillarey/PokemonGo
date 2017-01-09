@@ -21,6 +21,8 @@
     <string name="transfer_dialog_success_title">Transfer success</string>
     <string name="transfer_dialog_success_content">Transferred %1$d pokemon successfully. %2$d failed to transfer</string>
     <string name="transfer_dialog_success_ok">OK</string>
+    <string name="transfer_dialog_complete_title">Transfer complete</string>
+    <string name="transfer_dialog_complete_content">Transferred %1$d pokemon</string>
 
     <!-- Evolve Dialog -->
     <string name="evolve_dialog_title">Evolving Pokemon</string>
