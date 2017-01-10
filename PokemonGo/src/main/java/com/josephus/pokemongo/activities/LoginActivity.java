@@ -161,6 +161,7 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 PokemonGo.provider.login(strings[0]);
                 PokemonGo.go = new com.pokegoapi.api.PokemonGo(httpClient);
+                hasher = new LegacyHashProvider();
                 PokemonGo.go.login(PokemonGo.provider, hasher);
                 return PokemonGo.provider.getRefreshToken();
             } catch (LoginFailedException e) {
