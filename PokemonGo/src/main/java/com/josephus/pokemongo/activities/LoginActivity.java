@@ -17,8 +17,12 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.josephus.pokemongo.PokemonGo;
 import com.josephus.pokemongo.R;
 import com.pokegoapi.auth.GoogleUserCredentialProvider;
+import com.pokegoapi.exceptions.CaptchaActiveException;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
+import com.pokegoapi.util.hash.HashProvider;
+import com.pokegoapi.util.hash.legacy.LegacyHashProvider;
+import com.pokegoapi.util.hash.pokehash.PokeHashProvider;
 
 import okhttp3.OkHttpClient;
 
@@ -33,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @BindView(R.id.activity_login)
     LinearLayout parent;
+    private HashProvider hasher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +61,8 @@ public class LoginActivity extends AppCompatActivity {
         } catch (RemoteServerException e) {
             e.printStackTrace();
         } catch (LoginFailedException e) {
+            e.printStackTrace();
+        } catch (CaptchaActiveException e) {
             e.printStackTrace();
         }
         return null;
@@ -113,11 +120,14 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 httpClient = new OkHttpClient();
                 PokemonGo.go = new com.pokegoapi.api.PokemonGo(httpClient);
-                PokemonGo.go.login(new GoogleUserCredentialProvider(httpClient, strings[0]));
+                hasher = new LegacyHashProvider();
+                PokemonGo.go.login(new GoogleUserCredentialProvider(httpClient, strings[0]), hasher);
                 return strings[0];
             } catch (RemoteServerException e) {
                 e.printStackTrace();
             } catch (LoginFailedException e) {
+                e.printStackTrace();
+            } catch (CaptchaActiveException e) {
                 e.printStackTrace();
             }
             return null;
@@ -151,11 +161,13 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 PokemonGo.provider.login(strings[0]);
                 PokemonGo.go = new com.pokegoapi.api.PokemonGo(httpClient);
-                PokemonGo.go.login(PokemonGo.provider);
+                PokemonGo.go.login(PokemonGo.provider, hasher);
                 return PokemonGo.provider.getRefreshToken();
             } catch (LoginFailedException e) {
                 e.printStackTrace();
             } catch (RemoteServerException e) {
+                e.printStackTrace();
+            } catch (CaptchaActiveException e) {
                 e.printStackTrace();
             }
             return null;

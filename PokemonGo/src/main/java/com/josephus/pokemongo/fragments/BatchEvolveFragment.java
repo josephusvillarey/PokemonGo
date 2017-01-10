@@ -33,6 +33,7 @@ import com.josephus.pokemongo.comparators.NumComparator;
 import com.josephus.pokemongo.interfaces.ItemSelectable;
 import com.josephus.pokemongo.interfaces.OnListFragmentInteractionListener;
 import com.pokegoapi.api.pokemon.Pokemon;
+import com.pokegoapi.exceptions.CaptchaActiveException;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
 
@@ -224,6 +225,8 @@ public class BatchEvolveFragment extends Fragment implements ItemSelectable {
                     } catch (RemoteServerException e) {
                         e.printStackTrace();
                         successful = false;
+                    } catch (CaptchaActiveException e) {
+                        e.printStackTrace();
                     }
                 } else {
                     cantEvolve++;
@@ -284,6 +287,8 @@ public class BatchEvolveFragment extends Fragment implements ItemSelectable {
                 } catch (RemoteServerException e) {
                     e.printStackTrace();
                     successful = false;
+                } catch (CaptchaActiveException e) {
+                    e.printStackTrace();
                 }
                 publishProgress(successful);
             }

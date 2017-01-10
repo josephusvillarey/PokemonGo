@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import POGOProtos.Enums.PokemonTypeOuterClass;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -20,6 +21,7 @@ import com.josephus.pokemongo.utils.MovesUtil;
 import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.api.pokemon.PokemonType;
 import com.pokegoapi.exceptions.NoSuchItemException;
+import com.pokegoapi.main.PokemonMeta;
 
 import org.w3c.dom.Text;
 
@@ -91,22 +93,22 @@ public class PokemonDetailsDialog extends Dialog {
         isFav.setImageResource(pokemon.isFavorite() ? R.drawable.ic_fav_pressed : R.drawable.ic_fav);
         name.setText(pokemon.getPokemonId().toString());
         cp.setText(
-                getContext().getString(R.string.cp_text, String.valueOf(pokemon.getProto().getCp())));
+                getContext().getString(R.string.cp_text, String.valueOf(pokemon.getCp())));
         type.setText(
-                pokemon.getMeta().getType1().toString() + (pokemon.getMeta().getType2() == PokemonType.NONE
-                        ? "" : "/" + pokemon.getMeta().getType2().toString()));
+                PokemonMeta.getPokemonSettings(pokemon.getPokemonId()).getType().toString() + (PokemonMeta.getPokemonSettings(pokemon.getPokemonId()).getType2() == PokemonTypeOuterClass.PokemonType.POKEMON_TYPE_NONE
+                        ? "" : "/" + PokemonMeta.getPokemonSettings(pokemon.getPokemonId()).getType2().toString()));
         iv.setText(getContext().getString(R.string.iv_text,
                 String.format("%.2f", pokemon.getIvInPercentage())));
         atk.setText(
-                getContext().getString(R.string.atk_text, pokemon.getProto().getIndividualAttack()));
+                getContext().getString(R.string.atk_text, pokemon.getIndividualAttack()));
         def.setText(
-                getContext().getString(R.string.def_text, pokemon.getProto().getIndividualDefense()));
+                getContext().getString(R.string.def_text, pokemon.getIndividualDefense()));
         sta.setText(
-                getContext().getString(R.string.sta_text, pokemon.getProto().getIndividualStamina()));
+                getContext().getString(R.string.sta_text, pokemon.getIndividualStamina()));
         height.setText(getContext().getString(R.string.height_text,
-                String.format("%.2f", pokemon.getProto().getHeightM())));
+                String.format("%.2f", pokemon.getHeightM())));
         weight.setText(getContext().getString(R.string.weight_text,
-                String.format("%.2f", pokemon.getProto().getWeightKg())));
+                String.format("%.2f", pokemon.getWeightKg())));
         candy.setText(getContext().getString(R.string.candy_text, pokemon.getCandy()));
         try {
             maxCp.setText(getContext().getString(R.string.max_cp_text, pokemon.getMaxCpForPlayer()));

@@ -18,7 +18,7 @@ public class MovesUtil {
         for (String s : tokens) {
             sb.append(lowercaseAllExceptFirst(s)).append(" ");
         }
-        return sb.toString().trim();
+        return sb.toString().trim() + " " + pokemon.getMove1().getNumber();
     }
 
     public static final String getMove2String(Pokemon pokemon) {
@@ -29,7 +29,7 @@ public class MovesUtil {
         for (String s : tokens) {
             sb.append(lowercaseAllExceptFirst(s)).append(" ");
         }
-        return sb.toString().trim();
+        return sb.toString().trim() + " " + pokemon.getMove2().getNumber();
     }
 
     private static final String lowercaseAllExceptFirst(String s) {

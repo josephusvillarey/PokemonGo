@@ -12,9 +12,10 @@ public class BatchEvolveService extends IntentService {
 
     private static final String TAG = BatchEvolveService.class.getSimpleName();
 
-    public BatchEvolveService(String name) {
-        super(name);
+    public BatchEvolveService() {
+        super((TAG));
     }
+
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {

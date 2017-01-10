@@ -87,17 +87,17 @@ public class MyBatchEvolveRecyclerViewAdapter
             image.setImageResource(resId);
             fav.setImageResource(pokemon.isFavorite() ? R.drawable.ic_fav_pressed : R.drawable.ic_fav);
             cp_name.setText(
-                    context.getString(R.string.cp_name_text, String.valueOf(pokemon.getProto().getCp()),
+                    context.getString(R.string.cp_name_text, String.valueOf(pokemon.getCp()),
                             pokemon.getPokemonId().toString()));
             iv.setText(
                     context.getString(R.string.iv_text, String.format("%.2f", pokemon.getIvInPercentage())));
-            atk.setText(context.getString(R.string.atk_text, pokemon.getProto().getIndividualAttack()));
-            def.setText(context.getString(R.string.def_text, pokemon.getProto().getIndividualDefense()));
-            sta.setText(context.getString(R.string.sta_text, pokemon.getProto().getIndividualStamina()));
+            atk.setText(context.getString(R.string.atk_text, pokemon.getIndividualAttack()));
+            def.setText(context.getString(R.string.def_text, pokemon.getIndividualDefense()));
+            sta.setText(context.getString(R.string.sta_text, pokemon.getIndividualStamina()));
             totalCandies.setText(context.getString(R.string.total_candies_text, pokemon.getCandy()));
             if (pokemon.getCandiesToEvolve() > 0) {
                 toEvolve.setVisibility(View.VISIBLE);
-                toEvolve.setText(context.getString(R.string.to_evolve, pokemon.getMeta().getCandyToEvolve()));
+                toEvolve.setText(context.getString(R.string.to_evolve, pokemon.getCandiesToEvolve()));
             } else {
                 toEvolve.setVisibility(View.GONE);
             }

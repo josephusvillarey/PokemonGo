@@ -21,7 +21,7 @@ android {
     buildToolsVersion '25.0.0'
     defaultConfig {
         multiDexEnabled true
-        applicationId "com.josephus.pokemongocompanionapp"
+        applicationId "com.josephus.pokemongo"
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
@@ -37,12 +37,11 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.0.1'
-    compile 'com.pokegoapi:PokeGOAPI-library:0.4.1'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:design:25.0.1'
     compile 'com.android.support:cardview-v7:25.0.1'
@@ -56,4 +55,5 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
         transitive = true;
     }
+    compile files('/Users/josephus/StudioProjects/PokemonGo/libs/PokeGOAPI-library-all-0.4.1.jar')
 }
