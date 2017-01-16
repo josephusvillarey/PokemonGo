@@ -83,6 +83,7 @@ public class BatchTransferService extends IntentService {
 
     private void publishProgress(int progress) {
         mBuilder.setProgress(indices.length, progress, false);
+        mBuilder.setContentTitle(getString(R.string.transfer_dialog_title, indices.length)).setContentText(getString(R.string.transfer_dialog_content, progress, indices.length));
         mNotificationManager.notify(TRANSFER_NOTIFICATION_ID, mBuilder.build());
 
         Intent i = new Intent(KEY_TRANSFER);
@@ -103,7 +104,7 @@ public class BatchTransferService extends IntentService {
     }
 
     private void setupNotification(int progress) {
-        mBuilder = new NotificationCompat.Builder(getApplicationContext()).setSmallIcon(R.mipmap.ic_launcher).setContentTitle(getString(R.string.transfer_dialog_title)).setContentText(getString(R.string.transfer_dialog_content, indices.length));
+        mBuilder = new NotificationCompat.Builder(getApplicationContext()).setSmallIcon(R.mipmap.ic_launcher).setContentTitle(getString(R.string.transfer_dialog_title, indices.length)).setContentText(getString(R.string.transfer_dialog_content, progress, indices.length));
 
         Intent resultIntent = new Intent(getApplicationContext(), ContainerActivity.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.josephus.pokemongo.PokemonGo;
 import com.josephus.pokemongo.R;
@@ -217,7 +219,12 @@ public class BatchTransferFragment extends Fragment implements ItemSelectable {
                     case BatchTransferService.KEY_TRANSFER:
                         if (((PokemonGo) getActivity().getApplication()).isBatchTransferServiceRunning()) {
                             if (transferOngoingDialog == null) {
-                                transferOngoingDialog = new MaterialDialog.Builder(getActivity()).title(R.string.transfer_dialog_title).build();
+                                transferOngoingDialog = new MaterialDialog.Builder(getActivity()).title(getString(R.string.transfer_dialog_title, checkedItemsIndex.size())).positiveText(R.string.transfer_dialog_success_ok).onPositive(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                        getActivity().finish();
+                                    }
+                                }).build();
                             }
                             transferOngoingDialog.show();
                         }

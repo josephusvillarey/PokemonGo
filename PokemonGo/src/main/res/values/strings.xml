@@ -16,8 +16,8 @@
     <string name="selected">Selected: %1$d</string>
 
     <!-- Transfer Dialog -->
-    <string name="transfer_dialog_title">Transferring Pokemon</string>
-    <string name="transfer_dialog_content">Transferring %1$d pokemon</string>
+    <string name="transfer_dialog_title">Transferring %1$d Pokemon</string>
+    <string name="transfer_dialog_content">Transferred %1$d out of %2$d</string>
     <string name="transfer_dialog_success_title">Transfer success</string>
     <string name="transfer_dialog_success_content">Transferred %1$d pokemon successfully. %2$d failed to transfer</string>
     <string name="transfer_dialog_success_ok">OK</string>
