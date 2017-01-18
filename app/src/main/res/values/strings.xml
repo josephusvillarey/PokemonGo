@@ -6,8 +6,8 @@
     <string name="atk_text">ATK\n%1$d</string>
     <string name="def_text">DEF\n%1$d</string>
     <string name="sta_text">STA\n%1$d</string>
-    <string name="height_text">Height\n%1$sm</string>
-    <string name="weight_text">Weight\n%1$skg</string>
+    <string name="height_text">%1$sm</string>
+    <string name="weight_text">%1$skg</string>
     <string name="candy_text">Candy\n%1$d</string>
     <string name="max_cp_text">Max CP\n%1$d</string>
     <string name="total_candies_text">Total candies: %1$d</string>

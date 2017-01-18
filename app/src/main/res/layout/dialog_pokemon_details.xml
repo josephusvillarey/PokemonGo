@@ -1,176 +1,235 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="12dip"
     android:background="@drawable/layout_rounded_bg"
-    >
+    android:orientation="vertical"
+    android:padding="24dip">
 
-  <ImageView
-      android:layout_width="120dip"
-      android:layout_height="120dip"
-      android:adjustViewBounds="true"
-      android:src="@drawable/image_001"
-      android:layout_centerHorizontal="true"
-      android:id="@+id/image"
-      />
-  <LinearLayout
-      android:layout_marginTop="12dip"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:id="@+id/name_fav_ll"
-      android:layout_below="@id/image"
-      android:layout_centerHorizontal="true"
-      >
     <ImageView
-        android:layout_width="24dip"
-        android:layout_height="24dip"
-        android:src="@drawable/ic_fav_pressed"
-        android:layout_gravity="center"
-        android:layout_marginRight="4dip"
-        android:id="@+id/is_fav_iv"
-        />
-    <TextView
+        android:id="@+id/image"
+        android:layout_width="120dip"
+        android:layout_height="120dip"
+        android:layout_centerHorizontal="true"
+        android:adjustViewBounds="true"
+        android:src="@drawable/image_001" />
+
+    <LinearLayout
+        android:id="@+id/name_fav_ll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Bulbasaur"
-        android:id="@+id/name_tv"
-        />
-  </LinearLayout>
+        android:layout_below="@id/image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="12dip"
+        android:orientation="horizontal">
 
-  <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_below="@id/name_fav_ll"
-      android:layout_centerHorizontal="true"
-      android:text="CP 9999"
-      android:id="@+id/cp_tv"
-      android:layout_marginTop="12dip"
-      />
-  <TextView
-      android:layout_marginTop="12dip"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_below="@id/cp_tv"
-      android:text="GRASS/POISON"
-      android:layout_centerHorizontal="true"
-      android:id="@+id/type_tv"
-      />
+        <ImageView
+            android:id="@+id/is_fav_iv"
+            android:layout_width="24dip"
+            android:layout_height="24dip"
+            android:layout_gravity="center"
+            android:layout_marginRight="4dip"
+            android:src="@drawable/ic_fav_pressed" />
 
-  <LinearLayout
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:weightSum="4"
-      android:orientation="horizontal"
-      android:layout_below="@id/type_tv"
-      android:id="@+id/stats_ll"
-      android:layout_marginTop="12dip"
-      >
-    <TextView
-        android:layout_width="0dip"
+        <TextView
+            android:id="@+id/name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Bulbasaur" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/cp_pb"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="IV\n100%"
-        android:gravity="center"
-        android:id="@+id/iv_tv"
-        />
+        android:layout_below="@id/name_fav_ll"
+        android:layout_marginLeft="24dip"
+        android:layout_marginRight="24dip"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="50" />
+
     <TextView
-        android:layout_width="0dip"
+        android:id="@+id/current_max_cp_tv"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="ATK\n15"
-        android:gravity="center"
-        android:id="@+id/atk_tv"
-        />
-    <TextView
-        android:layout_width="0dip"
+        android:layout_below="@id/cp_pb"
+        android:layout_centerHorizontal="true"
+        android:text="450/3456 CP" />
+
+    <LinearLayout
+        android:id="@+id/phys_details_ll"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="DEF\n15"
-        android:gravity="center"
-        android:id="@+id/def_tv"
-        />
-    <TextView
-        android:layout_width="0dip"
+        android:layout_below="@id/current_max_cp_tv"
+        android:layout_marginLeft="24dip"
+        android:layout_marginRight="24dip"
+        android:layout_marginTop="12dip"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/weight_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="260.58kg"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/type_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="GRASS/POISON" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/height_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="70.1m"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/separator_1"
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:layout_below="@id/phys_details_ll"
+        android:layout_marginLeft="12dip"
+        android:layout_marginRight="12dip"
+        android:layout_marginTop="18dip"
+        android:background="@android:color/darker_gray"></View>
+
+    <LinearLayout
+        android:id="@+id/stats_ll"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="STA\n15"
-        android:gravity="center"
-        android:id="@+id/sta_tv"
-        />
-  </LinearLayout>
-  <LinearLayout
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:weightSum="4"
-      android:orientation="horizontal"
-      android:layout_below="@id/stats_ll"
-      android:id="@+id/details_ll"
-      android:layout_marginTop="12dip"
-      >
-    <TextView
-        android:layout_width="0dip"
+        android:layout_below="@id/separator_1"
+        android:layout_marginTop="12dip"
+        android:orientation="horizontal"
+        android:weightSum="5">
+
+        <TextView
+            android:id="@+id/iv_tv"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="IV\n100%" />
+
+        <TextView
+            android:id="@+id/atk_tv"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="ATK\n15" />
+
+        <TextView
+            android:id="@+id/def_tv"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="DEF\n15" />
+
+        <TextView
+            android:id="@+id/sta_tv"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="STA\n15" />
+
+        <TextView
+            android:id="@+id/candy_tv"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Candy\n999" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/separator_2"
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:layout_below="@id/stats_ll"
+        android:layout_marginLeft="12dip"
+        android:layout_marginRight="12dip"
+        android:layout_marginTop="18dip"
+        android:background="@android:color/darker_gray"></View>
+
+    <RelativeLayout
+        android:id="@+id/move_1_rl"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Height\n1.50m"
-        android:gravity="center"
-        android:id="@+id/height_tv"
-        />
-    <TextView
-        android:layout_width="0dip"
+        android:layout_below="@id/separator_2"
+        android:layout_marginLeft="24dip"
+        android:layout_marginRight="24dip"
+        android:layout_marginTop="18dip">
+
+        <TextView
+            android:id="@+id/move1_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="Ember (Fire)" />
+
+        <TextView
+            android:id="@+id/move1_pow_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="10" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/move_2_rl"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Weight\n1.50kg"
-        android:gravity="center"
-        android:id="@+id/weight_tv"
-        />
-    <TextView
-        android:layout_width="0dip"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Candy\n999"
-        android:gravity="center"
-        android:id="@+id/candy_tv"
-        />
-    <TextView
-        android:layout_width="0dip"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Max CP\n9999"
-        android:gravity="center"
-        android:id="@+id/maxcp_tv"
-        />
-  </LinearLayout>
-  <TextView
-      android:layout_marginTop="12dip"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_below="@id/details_ll"
-      android:id="@+id/moves_tv"
-      android:text="Moves"
-      android:layout_centerHorizontal="true"
-      />
-  <TextView
-      android:layout_marginTop="4dip"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:layout_below="@id/moves_tv"
-      android:id="@+id/move1_tv"
-      android:layout_centerHorizontal="true"
-      android:text="Razor Leaf\t15"
-      android:gravity="center"
-      />
-  <TextView
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:layout_below="@id/move1_tv"
-      android:id="@+id/move2_tv"
-      android:layout_centerHorizontal="true"
-      android:text="Solar Beam\t120"
-      android:gravity="center"
-      />
+        android:layout_below="@id/move_1_rl"
+        android:layout_marginLeft="24dip"
+        android:layout_marginRight="24dip"
+        android:layout_marginTop="12dip">
+
+        <TextView
+            android:id="@+id/move2_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="Ember (Fire)" />
+
+        <TextView
+            android:id="@+id/move2_pow_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="10" />
+    </RelativeLayout>
 
 </RelativeLayout>

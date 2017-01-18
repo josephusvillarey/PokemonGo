@@ -6,24 +6,23 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import POGOProtos.Enums.PokemonTypeOuterClass;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-import com.josephus.pokemongo.utils.MovesUtil;
+import com.josephus.pokemongo.utils.MoveUtil;
+import com.josephus.pokemongo.utils.TypeUtil;
 import com.pokegoapi.api.pokemon.Pokemon;
-import com.pokegoapi.api.pokemon.PokemonType;
+import com.pokegoapi.exceptions.CaptchaActiveException;
+import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.NoSuchItemException;
+import com.pokegoapi.exceptions.RemoteServerException;
 import com.pokegoapi.main.PokemonMeta;
 
-import org.w3c.dom.Text;
+import POGOProtos.Enums.PokemonMoveOuterClass;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by josephus on 04/10/2016.
@@ -39,8 +38,6 @@ public class PokemonDetailsDialog extends Dialog {
     ImageView isFav;
     @BindView(R.id.name_tv)
     TextView name;
-    @BindView(R.id.cp_tv)
-    TextView cp;
     @BindView(R.id.type_tv)
     TextView type;
     @BindView(R.id.iv_tv)
@@ -57,12 +54,18 @@ public class PokemonDetailsDialog extends Dialog {
     TextView weight;
     @BindView(R.id.candy_tv)
     TextView candy;
-    @BindView(R.id.maxcp_tv)
-    TextView maxCp;
     @BindView(R.id.move1_tv)
     TextView move1;
     @BindView(R.id.move2_tv)
     TextView move2;
+    @BindView(R.id.move1_pow_tv)
+    TextView move1Pow;
+    @BindView(R.id.move2_pow_tv)
+    TextView move2Pow;
+    @BindView(R.id.cp_pb)
+    ProgressBar cpProgressBar;
+    @BindView(R.id.current_max_cp_tv)
+    TextView currentMaxCp;
 
     private Pokemon pokemon;
 
@@ -90,13 +93,33 @@ public class PokemonDetailsDialog extends Dialog {
                 .getIdentifier("image_" + number, "drawable", getContext().getPackageName());
         image.setImageResource(resId);
 
-        isFav.setImageResource(pokemon.isFavorite() ? R.drawable.ic_fav_pressed : R.drawable.ic_fav);
+        setFavoriteDisplay();
+//        isFav.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                try {
+//                    pokemon.setFavoritePokemon(!pokemon.isFavorite());
+//                    setFavoriteDisplay();
+//                } catch (LoginFailedException e) {
+//                    e.printStackTrace();
+//                } catch (CaptchaActiveException e) {
+//                    e.printStackTrace();
+//                } catch (RemoteServerException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
         name.setText(pokemon.getPokemonId().toString());
-        cp.setText(
-                getContext().getString(R.string.cp_text, String.valueOf(pokemon.getCp())));
-        type.setText(
-                PokemonMeta.getPokemonSettings(pokemon.getPokemonId()).getType().toString() + (PokemonMeta.getPokemonSettings(pokemon.getPokemonId()).getType2() == PokemonTypeOuterClass.PokemonType.POKEMON_TYPE_NONE
-                        ? "" : "/" + PokemonMeta.getPokemonSettings(pokemon.getPokemonId()).getType2().toString()));
+
+        try {
+            currentMaxCp.setText(pokemon.getCp() + "/" + pokemon.getMaxCpForPlayer() + " CP");
+            cpProgressBar.setMax(pokemon.getMaxCpForPlayer());
+            cpProgressBar.setProgress(pokemon.getCp());
+        } catch (NoSuchItemException e) {
+            e.printStackTrace();
+        }
+
+        type.setText(TypeUtil.getPokemonTypeDisplayText(pokemon));
         iv.setText(getContext().getString(R.string.iv_text,
                 String.format("%.2f", pokemon.getIvInPercentage())));
         atk.setText(
@@ -110,14 +133,14 @@ public class PokemonDetailsDialog extends Dialog {
         weight.setText(getContext().getString(R.string.weight_text,
                 String.format("%.2f", pokemon.getWeightKg())));
         candy.setText(getContext().getString(R.string.candy_text, pokemon.getCandy()));
-        try {
-            maxCp.setText(getContext().getString(R.string.max_cp_text, pokemon.getMaxCpForPlayer()));
-        } catch (NoSuchItemException e) {
-            maxCp.setText("Not available");
-            e.printStackTrace();
-        }
 
-        move1.setText(MovesUtil.getMove1String(pokemon));
-        move2.setText(MovesUtil.getMove2String(pokemon));
+        move1.setText(MoveUtil.getMove1String(pokemon));
+        move2.setText(MoveUtil.getMove2String(pokemon));
+        move1Pow.setText(String.valueOf(MoveUtil.getMove1Power(pokemon)));
+        move2Pow.setText(String.valueOf(MoveUtil.getMove2Power(pokemon)));
+    }
+
+    private void setFavoriteDisplay() {
+        isFav.setImageResource(pokemon.isFavorite() ? R.drawable.ic_fav_pressed : R.drawable.ic_fav);
     }
 }
