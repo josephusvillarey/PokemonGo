@@ -25,11 +25,13 @@
     <string name="transfer_dialog_complete_content">Transferred %1$d pokemon</string>
 
     <!-- Evolve Dialog -->
-    <string name="evolve_dialog_title">Evolving Pokemon</string>
-    <string name="evolve_dialog_content">Evolving %1$d pokemon</string>
+    <string name="evolve_dialog_title">Evolving %1$d Pokemon</string>
+    <string name="evolve_dialog_content">Evolved %1$d out of %2$d</string>
     <string name="evolve_dialog_success_title">Evolve success</string>
     <string name="evolve_dialog_success_content">Evolved %1$d pokemon successfully. %2$d failed to evolve, %3$d are unable to evolve</string>
     <string name="evolve_dialog_success_ok">OK</string>
+    <string name="evolve_dialog_complete_title">Evolve complete</string>
+    <string name="evolve_dialog_complete_content">Evolved %1$d pokemon</string>
 
     <string-array name="sort_by_options">
         <item>Favorite</item>

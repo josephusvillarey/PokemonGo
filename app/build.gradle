@@ -55,5 +55,5 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
         transitive = true;
     }
-    compile files('/Users/josephus/StudioProjects/PokemonGo/libs/PokeGOAPI-library-all-0.4.1.jar')
+    compile files('lib/PokeGOAPI-library-all-0.4.1.jar')
 }
