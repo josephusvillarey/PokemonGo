@@ -32,6 +32,9 @@
     <string name="evolve_dialog_success_ok">OK</string>
     <string name="evolve_dialog_complete_title">Evolve complete</string>
     <string name="evolve_dialog_complete_content">Evolved %1$d pokemon</string>
+    <string name="login_with_google">Login with Google</string>
+    <string name="login_with_pokemon_trainer_club">Login with Pokemon Trainer Club</string>
+    <string name="ptc_login_text">Login</string>
 
     <string-array name="sort_by_options">
         <item>Favorite</item>

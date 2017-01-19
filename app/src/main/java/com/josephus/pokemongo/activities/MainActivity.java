@@ -90,4 +90,11 @@ public class MainActivity extends AppCompatActivity {
         i.putExtra(ContainerActivity.KEY_ACTION, ContainerActivity.ACTION_TYPE_BATCH_TRANFER);
         startActivity(i);
     }
+
+    @OnClick(R.id.logout)
+    public void logout(View view) {
+        PokemonGo.clear();
+        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        finish();
+    }
 }

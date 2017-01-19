@@ -1,23 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
-    tools:context="com.josephus.pokemongo.activities.LoginActivity"
-    >
+    tools:context="com.josephus.pokemongo.activities.LoginActivity">
 
-  <Button
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:text="Login with Google"
-      android:id="@+id/googleLogin"
-      />
+    <Button
+        android:id="@+id/googleLogin"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/login_with_google" />
+
+    <Button
+        android:id="@+id/ptcLogin"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/login_with_pokemon_trainer_club" />
+
+    <EditText
+        android:id="@+id/ptc_username"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="Username"
+        android:paddingLeft="16dip"
+        android:visibility="invisible" />
+
+    <EditText
+        android:id="@+id/ptc_password"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:paddingLeft="16dip"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/ptc_login_btn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/ptc_login_text"
+        android:visibility="invisible" />
 
 </LinearLayout>
