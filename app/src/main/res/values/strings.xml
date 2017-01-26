@@ -11,6 +11,7 @@
     <string name="candy_text">Candy\n%1$d</string>
     <string name="max_cp_text">Max CP\n%1$d</string>
     <string name="total_candies_text">Total candies: %1$d</string>
+    <string name="remaining_candies_text">Remaining %1$s candy: %2$d</string>
     <string name="to_evolve">To evolve: %1$d</string>
     <string name="in_list">In list: %1$d</string>
     <string name="selected">Selected: %1$d</string>
@@ -43,5 +44,6 @@
         <item>Name</item>
         <item>Combat Power</item>
         <item>IV</item>
+        <item>Recent</item>
     </string-array>
 </resources>

@@ -81,6 +81,8 @@ public class BatchEvolveFragment extends Fragment implements ItemSelectable {
     public BatchEvolveFragment() {
     }
 
+
+
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static BatchEvolveFragment newInstance(int columnCount) {
@@ -136,22 +138,22 @@ public class BatchEvolveFragment extends Fragment implements ItemSelectable {
                 Log.d(TAG, "switched");
                 switch (i) {
                     case 0: // Fav
-                        Collections.sort(PokemonGo.pokemonList, new FavoriteComparator());
+                        Collections.sort(batchEvolveRecyclerViewAdapter.getmValues(), new FavoriteComparator());
                         break;
                     case 1: // Num
-                        Collections.sort(PokemonGo.pokemonList, new NumComparator());
+                        Collections.sort(batchEvolveRecyclerViewAdapter.getmValues(), new NumComparator());
                         break;
                     case 2: //HP
-                        Collections.sort(PokemonGo.pokemonList, new HPComparator());
+                        Collections.sort(batchEvolveRecyclerViewAdapter.getmValues(), new HPComparator());
                         break;
                     case 3: // Name
-                        Collections.sort(PokemonGo.pokemonList, new NameComparator());
+                        Collections.sort(batchEvolveRecyclerViewAdapter.getmValues(), new NameComparator());
                         break;
                     case 4: // CP
-                        Collections.sort(PokemonGo.pokemonList, new CPComparator());
+                        Collections.sort(batchEvolveRecyclerViewAdapter.getmValues(), new CPComparator());
                         break;
                     case 5: // IV
-                        Collections.sort(PokemonGo.pokemonList, new IVComparator());
+                        Collections.sort(batchEvolveRecyclerViewAdapter.getmValues(), new IVComparator());
                         break;
                 }
                 batchEvolveRecyclerViewAdapter.notifyDataSetChanged();

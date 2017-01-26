@@ -31,6 +31,7 @@ import com.josephus.pokemongo.comparators.HPComparator;
 import com.josephus.pokemongo.comparators.IVComparator;
 import com.josephus.pokemongo.comparators.NameComparator;
 import com.josephus.pokemongo.comparators.NumComparator;
+import com.josephus.pokemongo.comparators.RecentComparator;
 import com.josephus.pokemongo.interfaces.ItemSelectable;
 import com.josephus.pokemongo.interfaces.OnListFragmentInteractionListener;
 import com.josephus.pokemongo.services.BatchTransferService;
@@ -156,6 +157,9 @@ public class BatchTransferFragment extends Fragment implements ItemSelectable {
                         break;
                     case 5: // IV
                         Collections.sort(PokemonGo.pokemonList, new IVComparator());
+                        break;
+                    case 6: // Recent
+                        Collections.sort(PokemonGo.pokemonList, new RecentComparator());
                         break;
                 }
                 batchTransferRecyclerViewAdapter.notifyDataSetChanged();

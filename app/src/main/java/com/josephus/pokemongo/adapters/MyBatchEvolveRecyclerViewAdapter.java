@@ -1,6 +1,7 @@
 package com.josephus.pokemongo.adapters;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +16,12 @@ import com.josephus.pokemongo.R;
 import com.josephus.pokemongo.interfaces.OnListFragmentInteractionListener;
 import com.pokegoapi.api.pokemon.Pokemon;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+
+import POGOProtos.Enums.PokemonFamilyIdOuterClass;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Pokemon} and makes a call to the
@@ -30,13 +35,43 @@ public class MyBatchEvolveRecyclerViewAdapter
     private final List<Pokemon> mValues;
     private final HashSet<Integer> checkedItemsIndex;
     private final OnListFragmentInteractionListener mListener;
+    private HashMap<PokemonFamilyIdOuterClass.PokemonFamilyId, Integer> candyCount;
+    private RecyclerView recyclerView;
+    private Snackbar snackbar;
 
     public MyBatchEvolveRecyclerViewAdapter(List<Pokemon> items,
                                             OnListFragmentInteractionListener listener,
                                             HashSet<Integer> checkedItemsIndex) {
-        mValues = items;
+        mValues = new ArrayList<Pokemon>();
+        candyCount = new HashMap<PokemonFamilyIdOuterClass.PokemonFamilyId, Integer>();
+        for (Pokemon item : items) {
+            if (item.canEvolve()) {
+                if (!candyCount.containsKey(item.getPokemonFamily())) {
+                    candyCount.put(item.getPokemonFamily(), item.getCandy());
+                }
+                if (item.getCandy() >= item.getCandiesToEvolve()) {
+                    mValues.add(item);
+                }
+            }
+        }
         this.mListener = listener;
         this.checkedItemsIndex = checkedItemsIndex;
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        this.recyclerView = recyclerView;
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        this.recyclerView = null;
+    }
+
+    public List<Pokemon> getmValues() {
+        return mValues;
     }
 
     @Override
@@ -79,7 +114,7 @@ public class MyBatchEvolveRecyclerViewAdapter
 
         public void bindTo(final Pokemon pokemon) {
             this.pokemon = pokemon;
-            Context context = parentPanel.getContext();
+            final Context context = parentPanel.getContext();
             String number = ("000" + String.valueOf(pokemon.getPokemonId().getNumber())).substring(
                     String.valueOf(pokemon.getPokemonId().getNumber()).length());
             int resId = context.getResources()
@@ -105,14 +140,37 @@ public class MyBatchEvolveRecyclerViewAdapter
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    int previousCheckedItemsCount = checkedItemsIndex.size();
                     if (b) {
                         checkedItemsIndex.add(getAdapterPosition());
+                        if (previousCheckedItemsCount != checkedItemsIndex.size()) {
+                            candyCount.put(mValues.get(getAdapterPosition()).getPokemonFamily(), candyCount.get(mValues.get(getAdapterPosition()).getPokemonFamily()) - mValues.get(getAdapterPosition()).getCandiesToEvolve());
+                        }
+
                     } else {
                         checkedItemsIndex.remove(getAdapterPosition());
+                        if (previousCheckedItemsCount != checkedItemsIndex.size()) {
+                            candyCount.put(mValues.get(getAdapterPosition()).getPokemonFamily(), candyCount.get(mValues.get(getAdapterPosition()).getPokemonFamily()) + mValues.get(getAdapterPosition()).getCandiesToEvolve());
+                        }
+
                     }
+
+                    if (previousCheckedItemsCount != checkedItemsIndex.size()) {
+                        if (snackbar == null) {
+                            snackbar = Snackbar.make(recyclerView, context.getString(R.string.remaining_candies_text, pokemon.getPokemonId().toString(), candyCount.get(pokemon.getPokemonFamily())), Snackbar.LENGTH_INDEFINITE);
+                        } else {
+                            snackbar.setText(context.getString(R.string.remaining_candies_text, pokemon.getPokemonId().toString(), candyCount.get(pokemon.getPokemonFamily())));
+                        }
+                        if (!snackbar.isShown()) {
+                            snackbar.show();
+                        }
+                    }
+
                     mListener.onSecondaryListFragmentInteraction(checkedItemsIndex.size());
                 }
             });
+
+
             checkBox.setChecked(checkedItemsIndex.contains(getAdapterPosition()));
 
             parentPanel.setOnClickListener(new View.OnClickListener() {

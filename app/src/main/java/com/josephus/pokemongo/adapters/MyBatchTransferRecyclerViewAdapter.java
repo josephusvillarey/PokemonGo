@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.josephus.pokemongo.R;
 import com.josephus.pokemongo.interfaces.OnListFragmentInteractionListener;
 import com.pokegoapi.api.pokemon.Pokemon;
-import com.pokegoapi.util.Log;
 
 import java.util.HashSet;
 import java.util.List;
@@ -102,8 +101,6 @@ public class MyBatchTransferRecyclerViewAdapter
             } else {
                 toEvolve.setVisibility(View.GONE);
             }
-            Log.d(TAG, pokemon.getPokemonId() + " " + pokemon.getPokemonFamily());
-
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
