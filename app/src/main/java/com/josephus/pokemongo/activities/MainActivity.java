@@ -10,6 +10,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.crashlytics.android.Crashlytics;
 import com.josephus.pokemongo.PokemonGo;
 import com.josephus.pokemongo.R;
 import com.pokegoapi.api.pokemon.Pokemon;
@@ -27,7 +28,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(MainActivity.this);
 
+        logUser();
     }
+
+    private void logUser() {
+        Crashlytics.setUserIdentifier(PokemonGo.go.getPlayerProfile().getPlayerData().getUsername());
+    }
+
 
     @Override
     protected void onResume() {
