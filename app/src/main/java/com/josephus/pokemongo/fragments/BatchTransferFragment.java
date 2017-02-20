@@ -195,7 +195,6 @@ public class BatchTransferFragment extends Fragment implements ItemSelectable {
     @OnClick(R.id.transfer)
     public void transfer(View view) {
 
-        List<Pokemon> pokemonToTransfer = new ArrayList<>();
         int[] indices = new int[checkedItemsIndex.size()];
 
         int index = 0;

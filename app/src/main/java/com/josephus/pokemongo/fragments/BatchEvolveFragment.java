@@ -83,7 +83,6 @@ public class BatchEvolveFragment extends Fragment implements ItemSelectable {
     }
 
 
-
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static BatchEvolveFragment newInstance(int columnCount) {
@@ -190,15 +189,6 @@ public class BatchEvolveFragment extends Fragment implements ItemSelectable {
     @OnClick(R.id.transfer)
     public void transfer(View view) {
 
-        List<Pokemon> pokemonToEvolve = new ArrayList<>();
-
-        for (Integer i : checkedItemsIndex) {
-            Log.d(TAG, "item: " + i);
-            pokemonToEvolve.add(PokemonGo.pokemonList.get(i));
-        }
-
-        new EvolveTask().execute(pokemonToEvolve);
-
     }
 
     @Override
@@ -208,128 +198,5 @@ public class BatchEvolveFragment extends Fragment implements ItemSelectable {
 
     public void modifySelectedCount(int count) {
         selectedTv.setText(getString(R.string.selected, count));
-    }
-
-    class EvolveTask extends AsyncTask<List<Pokemon>, Boolean, Void> {
-        private MaterialDialog evolveProgressDialog;
-        private int success = 0, fail = 0, cantEvolve = 0;
-
-        @Override
-        protected Void doInBackground(List<Pokemon>... lists) {
-            for (Pokemon p : lists[0]) {
-                boolean successful = true;
-                Log.d(TAG, "calling evolve");
-                if (p.canEvolve()) {
-                    try {
-                        p.evolve();
-                    } catch (LoginFailedException e) {
-                        e.printStackTrace();
-                        successful = false;
-                    } catch (RemoteServerException e) {
-                        e.printStackTrace();
-                        successful = false;
-                    } catch (CaptchaActiveException e) {
-                        e.printStackTrace();
-                    } catch (HashException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    cantEvolve++;
-                }
-                publishProgress(successful);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            evolveProgressDialog = new MaterialDialog.Builder(getActivity()).title(R.string.evolve_dialog_title).content(R.string.evolve_dialog_content, checkedItemsIndex.size()).progress(false, checkedItemsIndex.size(), true).show();
-        }
-
-        @Override
-        protected void onProgressUpdate(Boolean... values) {
-            super.onProgressUpdate(values);
-            if (values[0]) {
-                success++;
-            } else {
-                fail++;
-            }
-            evolveProgressDialog.incrementProgress(1);
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            evolveProgressDialog.dismiss();
-            new MaterialDialog.Builder(getActivity()).title(R.string.evolve_dialog_success_title).content(getString(R.string.evolve_dialog_success_content, success, fail, cantEvolve)).positiveText(R.string.evolve_dialog_success_ok).onPositive(new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                    dialog.dismiss();
-                    ;
-                    getActivity().finish();
-                }
-            }).show();
-        }
-    }
-
-    class TransferTask extends AsyncTask<List<Pokemon>, Boolean, Void> {
-
-
-        private MaterialDialog transferProgressDialog;
-        private int success = 0, fail = 0;
-
-        @Override
-        protected Void doInBackground(List<Pokemon>... list) {
-            for (Pokemon p : list[0]) {
-                boolean successful = true;
-                Log.d(TAG, "calling transfer");
-                try {
-                    p.transferPokemon();
-                } catch (LoginFailedException e) {
-                    e.printStackTrace();
-                    successful = false;
-                } catch (RemoteServerException e) {
-                    e.printStackTrace();
-                    successful = false;
-                } catch (CaptchaActiveException e) {
-                    e.printStackTrace();
-                } catch (HashException e) {
-                    e.printStackTrace();
-                }
-                publishProgress(successful);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            transferProgressDialog = new MaterialDialog.Builder(getActivity()).title(R.string.transfer_dialog_title).content(getString(R.string.transfer_dialog_content, checkedItemsIndex.size())).progress(false, checkedItemsIndex.size(), true).show();
-        }
-
-        @Override
-        protected void onProgressUpdate(Boolean... values) {
-            super.onProgressUpdate(values);
-            if (values[0]) {
-                success++;
-            } else {
-                fail++;
-            }
-            transferProgressDialog.incrementProgress(1);
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            transferProgressDialog.dismiss();
-            new MaterialDialog.Builder(getActivity()).title(R.string.transfer_dialog_success_title).content(getString(R.string.transfer_dialog_success_content, success, fail)).positiveText(R.string.transfer_dialog_success_ok).onPositive(new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                    dialog.dismiss();
-                    getActivity().finish();
-                }
-            }).show();
-        }
     }
 }
