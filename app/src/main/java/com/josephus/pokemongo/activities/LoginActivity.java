@@ -28,6 +28,7 @@ import com.pokegoapi.auth.PtcCredentialProvider;
 import com.pokegoapi.exceptions.CaptchaActiveException;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
+import com.pokegoapi.exceptions.hash.HashException;
 import com.pokegoapi.main.PokemonMeta;
 import com.pokegoapi.util.hash.HashProvider;
 import com.pokegoapi.util.hash.legacy.LegacyHashProvider;
@@ -220,6 +221,8 @@ public class LoginActivity extends AppCompatActivity {
                 e.printStackTrace();
             } catch (CaptchaActiveException e) {
                 e.printStackTrace();
+            } catch (HashException e) {
+                e.printStackTrace();
             }
             return null;
         }
@@ -252,6 +255,8 @@ public class LoginActivity extends AppCompatActivity {
             } catch (CaptchaActiveException e) {
                 e.printStackTrace();
             } catch (LoginFailedException e) {
+                e.printStackTrace();
+            } catch (HashException e) {
                 e.printStackTrace();
             }
             return params[0];
@@ -292,6 +297,8 @@ public class LoginActivity extends AppCompatActivity {
             } catch (RemoteServerException e) {
                 e.printStackTrace();
             } catch (CaptchaActiveException e) {
+                e.printStackTrace();
+            } catch (HashException e) {
                 e.printStackTrace();
             }
             return null;

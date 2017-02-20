@@ -36,6 +36,7 @@ import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.exceptions.CaptchaActiveException;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
+import com.pokegoapi.exceptions.hash.HashException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -229,6 +230,8 @@ public class BatchEvolveFragment extends Fragment implements ItemSelectable {
                         successful = false;
                     } catch (CaptchaActiveException e) {
                         e.printStackTrace();
+                    } catch (HashException e) {
+                        e.printStackTrace();
                     }
                 } else {
                     cantEvolve++;
@@ -290,6 +293,8 @@ public class BatchEvolveFragment extends Fragment implements ItemSelectable {
                     e.printStackTrace();
                     successful = false;
                 } catch (CaptchaActiveException e) {
+                    e.printStackTrace();
+                } catch (HashException e) {
                     e.printStackTrace();
                 }
                 publishProgress(successful);

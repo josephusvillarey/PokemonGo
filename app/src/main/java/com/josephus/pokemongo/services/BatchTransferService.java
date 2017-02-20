@@ -18,6 +18,7 @@ import com.pokegoapi.api.pokemon.Pokemon;
 import com.pokegoapi.exceptions.CaptchaActiveException;
 import com.pokegoapi.exceptions.LoginFailedException;
 import com.pokegoapi.exceptions.RemoteServerException;
+import com.pokegoapi.exceptions.hash.HashException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +74,8 @@ public class BatchTransferService extends IntentService {
             } catch (RemoteServerException e) {
                 e.printStackTrace();
             } catch (CaptchaActiveException e) {
+                e.printStackTrace();
+            } catch (HashException e) {
                 e.printStackTrace();
             }
             publishProgress(++progress);
